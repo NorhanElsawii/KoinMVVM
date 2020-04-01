@@ -1,0 +1,8 @@
+<resources>
+    <string name="check_internet_connection">تحقق من الاتصال بالإنترنت</string>
+    <string name="some_thing_went_wrong_error_msg">حدث خطأ ما، من فضلك حاول مره اخرى</string>
+    <string name="please_click_to_retry">اضغط لإعاده المحاولة</string>
+    <string name="go_to_movie_list">اذهب الي قائمه الافلام</string>
+    <string name="switch_language">تغيير اللغه</string>
+    <string name="data">البيانات</string>
+</resources>
