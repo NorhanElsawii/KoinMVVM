@@ -25,19 +25,11 @@ class ListFragment : BaseFragment() {
     override fun onViewReady() {
         observe(viewModel.listStatus) {
             when (it) {
-                is Status.Loading -> {
-                    showDialogLoading()
-                }
+                is Status.Loading -> showDialogLoading()
                 is Status.LoadingMore -> handleLoadingMore()
-                is Status.Success<*> -> {
-                    hideDialogLoading()
-                }
+                is Status.Success<*> -> hideDialogLoading()
                 is Status.SuccessLoadingMore -> handleSuccessLoadingMore()
-                is Status.Error -> {
-                    onError(it) {
-                        hideDialogLoading()
-                    }
-                }
+                is Status.Error -> onError(it) { hideDialogLoading() }
                 is Status.ErrorLoadingMore -> onError(it) { handleErrorLoadingMore(it) }
             }
         }

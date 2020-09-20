@@ -28,25 +28,26 @@ class MainFragment : BaseFragment() {
 
         observe(viewModel.status) {
             when (it) {
-                is Status.Loading -> {
-                    showDialogLoading()
-                }
+                is Status.Loading -> showDialogLoading()
                 is Status.Success<*> -> {
                     hideDialogLoading()
                     tv_from_network.text =
                         "${getString(R.string.data)} ${(it.data as List<ResultsItem>)}"
                 }
-                is Status.Error -> {
-                    onError(it) {
-                        hideDialogLoading()
-                    }
-                }
+                is Status.Error -> onError(it) { hideDialogLoading() }
             }
         }
+        initViews()
+        initClickListeners()
+
         viewModel.getMovies()
+    }
 
+    private fun initViews() {
         tv_current_language.text = viewModel.getCurrentLanguage()
+    }
 
+    private fun initClickListeners() {
         btn_go_to_list.setOnClickListener {
             context?.launchActivity<ListActivity> { }
         }

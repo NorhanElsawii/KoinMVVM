@@ -24,6 +24,5 @@ class MainRepository(private val movieApiCalls: MovieApiCalls, private val movie
             localDataUtils.sharedPreferencesUtils.setLanguage(LocaleLanguage.English.getId())
         else
             localDataUtils.sharedPreferencesUtils.setLanguage(LocaleLanguage.Arabic.getId())
-
     }
 }

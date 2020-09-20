@@ -19,8 +19,6 @@ class MainViewModel constructor(private val mainRepository: MainRepository) :
         performNetworkCall({
             mainRepository.getMovies()
         }, status, {
-            it?.get(0)?.let { it.overview = "norhan" }
-
             doInBackground {
                 it?.let {
                     mainRepository.saveMovies(it.map { resultItem ->
@@ -42,6 +40,6 @@ class MainViewModel constructor(private val mainRepository: MainRepository) :
     }
 
     fun changeLanguage() {
-       mainRepository.changeLanguage()
+        mainRepository.changeLanguage()
     }
 }

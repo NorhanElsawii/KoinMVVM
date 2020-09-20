@@ -18,6 +18,4 @@ open class ItemViewHolder(
             }
         }
     }
-
-
 }

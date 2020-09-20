@@ -89,6 +89,4 @@ abstract class BaseViewModel(private val repository: BaseRepository) : ViewModel
     fun logout() {
         repository.clearUserData()
     }
-
-    //fun getUser() = repository.getUser()
 }

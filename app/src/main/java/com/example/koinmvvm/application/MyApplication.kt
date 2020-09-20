@@ -29,5 +29,4 @@ class MyApplication : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(LocaleHelper.onAttach(base))
     }
-
 }
