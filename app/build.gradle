@@ -99,7 +99,7 @@ dependencies {
     implementation "com.tapadoo.android:alerter:4.0.2"
     implementation "com.intuit.sdp:sdp-android:1.0.6"
     implementation "com.google.code.gson:gson:2.8.5"
-    implementation "android.arch.paging:runtime:1.0.1"
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0-alpha01"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "de.hdodenhof:circleimageview:3.0.0"
 }

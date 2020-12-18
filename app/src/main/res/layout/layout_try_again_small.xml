@@ -16,9 +16,11 @@
         android:src="@drawable/ic_retry" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/please_click_to_retry"
         android:textColor="@color/colorAccent" />
 </LinearLayout>

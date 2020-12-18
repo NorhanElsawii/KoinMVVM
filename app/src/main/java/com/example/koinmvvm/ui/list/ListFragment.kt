@@ -1,14 +1,15 @@
 package com.example.koinmvvm.ui.list
 
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.koinmvvm.R
-import com.example.koinmvvm.utils.PagedListFooterType
-import com.example.koinmvvm.utils.RetryListener
-import com.example.koinmvvm.utils.Status
 import com.example.koinmvvm.utils.base.BaseFragment
 import com.example.koinmvvm.utils.base.BaseViewModel
-import com.example.koinmvvm.utils.extensions.observe
 import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ListFragment : BaseFragment() {
@@ -23,51 +24,49 @@ class ListFragment : BaseFragment() {
     }
 
     override fun onViewReady() {
-        observe(viewModel.listStatus) {
-            when (it) {
-                is Status.Loading -> showDialogLoading()
-                is Status.LoadingMore -> handleLoadingMore()
-                is Status.Success<*> -> hideDialogLoading()
-                is Status.SuccessLoadingMore -> handleSuccessLoadingMore()
-                is Status.Error -> onError(it) { hideDialogLoading() }
-                is Status.ErrorLoadingMore -> onError(it) { handleErrorLoadingMore(it) }
-            }
-        }
         initPagedList()
+        btn_retry.setOnClickListener {
+            adapter?.retry()
+        }
     }
 
     private fun initPagedList() {
         initRecyclerView()
         viewModel.initPagedList()
-        observe(viewModel.pagedList) {
-            adapter?.submitList(it)
+        this.lifecycleScope.launch {
+            viewModel.movies?.collectLatest {
+                adapter?.submitData(it)
+            }
         }
     }
 
     private fun initRecyclerView() {
-        adapter = ListAdapter(object : RetryListener {
-            override fun onRetry() {
-                viewModel.retry()
-            }
-        })
+        adapter = ListAdapter()
         rv_list.layoutManager = LinearLayoutManager(context)
-        rv_list.adapter = adapter
-    }
+        rv_list.setHasFixedSize(true)
+        rv_list.adapter = adapter?.withLoadStateFooter(
+            footer = ListLoadStateAdapter { adapter?.retry() }
+        )
+        adapter?.addLoadStateListener { loadState ->
+            // Only show the list if refresh succeeds.
+            rv_list.isVisible = loadState.source.refresh is LoadState.NotLoading
+            // Show loading spinner during initial load or refresh.
+            if (loadState.source.refresh is LoadState.Loading)
+                showDialogLoading()
+            else
+                hideDialogLoading()
+            // Show the retry state if initial load or refresh fails.
+            btn_retry.isVisible = loadState.source.refresh is LoadState.Error
 
-    private fun handleLoadingMore() {
-        setFooter(PagedListFooterType.Loading)
-    }
-
-    private fun handleSuccessLoadingMore() {
-        setFooter(PagedListFooterType.None)
-    }
-
-    private fun handleErrorLoadingMore(error: Status.ErrorLoadingMore) {
-        setFooter(PagedListFooterType.Retry)
-        showErrorMsg(error.message)
-    }
-
-    private fun setFooter(pagedListFooter: PagedListFooterType) {
-        adapter?.setFooter(pagedListFooter)
+            // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+            val errorState = loadState.source.append as? LoadState.Error
+                ?: loadState.source.prepend as? LoadState.Error
+                ?: loadState.source.refresh as? LoadState.Error
+            errorState?.let {
+                showErrorMsg(
+                    "\uD83D\uDE28 Wooops ${it.error}"
+                )
+            }
+        }
     }
 }
