@@ -5,7 +5,6 @@ import com.example.koinmvvm.ui.list.ListRepository
 import com.example.koinmvvm.utils.SingleLiveEvent
 import com.example.koinmvvm.utils.Status
 import com.example.koinmvvm.utils.base.BaseDataSource
-import io.reactivex.functions.Action
 
 class ListDataSource(
     private val repository: ListRepository,
@@ -19,7 +18,7 @@ class ListDataSource(
     ) {
         performNetworkCall(
             { repository.getMovies(FIRST_PAGE) },
-            Action { loadInitial(params, callback) },
+            { loadInitial(params, callback) },
             {
                 callback.onResult(it ?: ArrayList(), null, FIRST_PAGE + 1)
             },
@@ -34,7 +33,7 @@ class ListDataSource(
 
         performNetworkCall(
             { repository.getMovies(params.key.toInt()) },
-            Action { loadAfter(params, callback) },
+            { loadAfter(params, callback) },
             {
                 callback.onResult(it ?: ArrayList(), params.key.toInt() + 1)
             },

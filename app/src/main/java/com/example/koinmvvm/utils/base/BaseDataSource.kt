@@ -7,7 +7,6 @@ import com.example.koinmvvm.data.remote.BaseResponse
 import com.example.koinmvvm.utils.SingleLiveEvent
 import com.example.koinmvvm.utils.Status
 import com.example.koinmvvm.utils.extensions.toObjectFromJson
-import io.reactivex.functions.Action
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,14 +24,14 @@ abstract class BaseDataSource<I>(
 ) :
     PageKeyedDataSource<Int, I>(), CoroutineScope {
 
-    private var retry: Action? = null
+    private var retry: (() -> Unit)? = null
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
     fun <D> performNetworkCall(
         apiCall: suspend () -> Response<BaseResponse<D>>,
-        retryAction: Action?,
+        retryAction: (() -> Unit)?,
         callBack: (m: D?) -> Unit,
         isLoadMore: Boolean,
         doOnSuccess: (responseData: D?) -> Unit = {}
@@ -104,10 +103,10 @@ abstract class BaseDataSource<I>(
     }
 
     fun retry() {
-        retry?.run()
+        retry?.invoke()
     }
 
-    private fun setRetry(action: Action?) {
+    private fun setRetry(action: (() -> Unit)?) {
         retry = action
     }
 
