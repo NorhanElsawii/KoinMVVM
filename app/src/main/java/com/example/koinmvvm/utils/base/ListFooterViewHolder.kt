@@ -22,8 +22,8 @@ class ListFooterViewHolder(
                 tv_error.text = loadState.error.localizedMessage
             }
             pb_loading.isVisible = loadState is LoadState.Loading
-            ll_retry.isVisible = loadState !is LoadState.Loading
-            tv_error.isVisible = loadState !is LoadState.Loading
+            ll_retry.isVisible = loadState is LoadState.Error
+            tv_error.isVisible = loadState is LoadState.Error
             ll_retry.setOnClickListener {
                 retry.invoke()
             }
