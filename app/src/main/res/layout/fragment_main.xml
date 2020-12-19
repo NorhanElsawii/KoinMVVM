@@ -7,12 +7,12 @@
     <TextView
         android:id="@+id/tv_from_network"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp" />
+        android:layout_height="@dimen/_150sdp" />
 
     <TextView
         android:id="@+id/tv_from_database"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_height="@dimen/_150sdp"
         android:layout_marginTop="20dp" />
 
     <Button

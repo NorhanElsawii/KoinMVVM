@@ -1,5 +1,6 @@
 package com.example.koinmvvm.ui.list
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.koinmvvm.R
 import com.example.koinmvvm.utils.PagedListFooterType
@@ -25,15 +26,22 @@ class ListFragment : BaseFragment() {
     override fun onViewReady() {
         observe(viewModel.listStatus) {
             when (it) {
-                is Status.Loading -> showDialogLoading()
+                is Status.Loading -> {
+                    showDialogLoading()
+                    btn_retry.visibility = View.GONE
+                }
                 is Status.LoadingMore -> handleLoadingMore()
                 is Status.Success<*> -> hideDialogLoading()
                 is Status.SuccessLoadingMore -> handleSuccessLoadingMore()
-                is Status.Error -> onError(it) { hideDialogLoading() }
+                is Status.Error -> onError(it) {
+                    hideDialogLoading()
+                    btn_retry.visibility = View.VISIBLE
+                }
                 is Status.ErrorLoadingMore -> onError(it) { handleErrorLoadingMore(it) }
             }
         }
         initPagedList()
+        initListeners()
     }
 
     private fun initPagedList() {
@@ -52,6 +60,12 @@ class ListFragment : BaseFragment() {
         })
         rv_list.layoutManager = LinearLayoutManager(context)
         rv_list.adapter = adapter
+    }
+
+    private fun initListeners() {
+        btn_retry.setOnClickListener {
+            viewModel.refresh()
+        }
     }
 
     private fun handleLoadingMore() {
